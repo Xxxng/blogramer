@@ -1,0 +1,25 @@
+package api
+
+import (
+	"app/backend/database"
+	"app/backend/models"
+)
+
+func AddAccount(account models.Account) (uint, error) {
+	if err := database.DB.Create(&account).Error; err != nil {
+		return 0, err
+	}
+	return account.ID, nil
+}
+
+func GetAccounts() ([]models.Account, error) {
+	var accounts []models.Account
+	if err := database.DB.Find(&accounts).Error; err != nil {
+		return nil, err
+	}
+	return accounts, nil
+}
+
+func DeleteAccount(id uint) error {
+	return database.DB.Delete(&models.Account{}, id).Error
+}
