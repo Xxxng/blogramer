@@ -68,3 +68,9 @@
   - **AI Refinement**: 한국어 블로그 포스팅에 최적화된 시스템 프롬프트로 고도화하여 글자수(1500자) 및 SEO 성능 향상.
   - **UX Cleanup**: 사이드바 레이아웃 및 메뉴 명칭을 직관적으로 개선(계정 관리, 포스팅 관리, 환경 설정).
   - **Final Build**: 전체 기능 연동 후 최종 프로덕션 빌드 성공 및 안정성 확인.
+
+- **2026-04-12 (12)**: 멀티 AI 엔진 지원 (Gemini, Claude, OpenAI) 및 설정 고도화.
+  - **Settings**: OpenAI, Gemini, Claude API 키 개별 설정 및 선호하는 AI 엔진 선택 기능 구현.
+  - **Backend Refactoring**: `GeneratePost` 로직을 리팩토링하여 설정된 엔진에 따라 각기 다른 SDK(OpenAI, Google GenAI, Anthropic)를 호출하도록 구현.
+  - **Image Gen**: 텍스트 생성 엔진과 관계없이 이미지 생성은 고품질 DALL-E 3(OpenAI)를 유지하도록 설계.
+  - **Stability**: 각 AI 제공자의 응답 형식을 통일하고, 계정 미연동 시에도 정상 동작하도록 예외 처리 강화.

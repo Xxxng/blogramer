@@ -5,6 +5,9 @@ import { GetSetting, SetSetting } from '../../wailsjs/go/main/App';
 
 const Settings: React.FC = () => {
   const [openAIKey, setOpenAIKey] = useState('');
+  const [geminiKey, setGeminiKey] = useState('');
+  const [claudeKey, setClaudeKey] = useState('');
+  const [preferredAI, setPreferredAI] = useState('openai');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -13,8 +16,15 @@ const Settings: React.FC = () => {
 
   const loadSettings = async () => {
     try {
-      const key = await GetSetting('openai_api_key');
-      setOpenAIKey(key || '');
+      const oKey = await GetSetting('openai_api_key');
+      const gKey = await GetSetting('gemini_api_key');
+      const cKey = await GetSetting('claude_api_key');
+      const pref = await GetSetting('preferred_ai');
+      
+      setOpenAIKey(oKey || '');
+      setGeminiKey(gKey || '');
+      setClaudeKey(cKey || '');
+      setPreferredAI(pref || 'openai');
     } catch (err) {
       console.error('Failed to load settings:', err);
     }
@@ -24,6 +34,9 @@ const Settings: React.FC = () => {
     setSaving(true);
     try {
       await SetSetting('openai_api_key', openAIKey);
+      await SetSetting('gemini_api_key', geminiKey);
+      await SetSetting('claude_api_key', claudeKey);
+      await SetSetting('preferred_ai', preferredAI);
       alert('설정이 저장되었습니다.');
     } catch (err) {
       alert('저장 실패: ' + err);
@@ -37,22 +50,56 @@ const Settings: React.FC = () => {
       <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
         <div className="p-6 border-b border-slate-700 bg-slate-800/50 flex items-center space-x-3">
           <Key className="text-blue-400" size={24} />
-          <h3 className="text-xl font-bold">API 설정</h3>
+          <h3 className="text-xl font-bold">AI 엔진 및 API 설정</h3>
         </div>
         
         <div className="p-8 space-y-6">
           <div>
-            <label className="block text-sm font-medium text-slate-400 mb-2">OpenAI API Key</label>
-            <input 
-              type="password"
-              placeholder="sk-..."
-              value={openAIKey}
-              onChange={(e) => setOpenAIKey(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none font-mono"
-            />
-            <p className="mt-2 text-xs text-slate-500">
-              글 생성 및 주제 분석을 위해 OpenAI API 키가 필요합니다. 키는 로컬 데이터베이스에만 저장됩니다.
-            </p>
+            <label className="block text-sm font-medium text-slate-400 mb-2">기본 AI 엔진 선택</label>
+            <select 
+              value={preferredAI}
+              onChange={(e) => setPreferredAI(e.target.value)}
+              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none text-white"
+            >
+              <option value="openai">OpenAI (GPT-4o)</option>
+              <option value="gemini">Google Gemini (Pro)</option>
+              <option value="claude">Anthropic Claude (3.5 Sonnet)</option>
+            </select>
+          </div>
+
+          <div className="pt-4 border-t border-slate-700 space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-slate-400 mb-2">OpenAI API Key</label>
+              <input 
+                type="password"
+                placeholder="sk-..."
+                value={openAIKey}
+                onChange={(e) => setOpenAIKey(e.target.value)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-400 mb-2">Gemini API Key</label>
+              <input 
+                type="password"
+                placeholder="AIza..."
+                value={geminiKey}
+                onChange={(e) => setGeminiKey(e.target.value)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-400 mb-2">Claude API Key</label>
+              <input 
+                type="password"
+                placeholder="sk-ant-..."
+                value={claudeKey}
+                onChange={(e) => setClaudeKey(e.target.value)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+              />
+            </div>
           </div>
           
           <div className="pt-4">
