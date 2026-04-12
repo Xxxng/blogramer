@@ -89,3 +89,53 @@ func ToPostResponses(posts []Post) []PostResponse {
 	}
 	return responses
 }
+
+// CategoryResponse represents the category data sent to the frontend
+type CategoryResponse struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+}
+
+// SubjectResponse represents the subject data sent to the frontend
+type SubjectResponse struct {
+	ID         uint   `json:"id"`
+	CategoryID uint   `json:"category_id"`
+	Keyword    string `json:"keyword"`
+	IsUsed     bool   `json:"is_used"`
+}
+
+// ToCategoryResponse converts Category model to CategoryResponse DTO
+func ToCategoryResponse(c Category) CategoryResponse {
+	return CategoryResponse{
+		ID:   c.ID,
+		Name: c.Name,
+	}
+}
+
+// ToCategoryResponses converts a slice of Category models to CategoryResponse DTOs
+func ToCategoryResponses(categories []Category) []CategoryResponse {
+	responses := make([]CategoryResponse, len(categories))
+	for i, c := range categories {
+		responses[i] = ToCategoryResponse(c)
+	}
+	return responses
+}
+
+// ToSubjectResponse converts Subject model to SubjectResponse DTO
+func ToSubjectResponse(s Subject) SubjectResponse {
+	return SubjectResponse{
+		ID:         s.ID,
+		CategoryID: s.CategoryID,
+		Keyword:    s.Keyword,
+		IsUsed:     s.IsUsed,
+	}
+}
+
+// ToSubjectResponses converts a slice of Subject models to SubjectResponse DTOs
+func ToSubjectResponses(subjects []Subject) []SubjectResponse {
+	responses := make([]SubjectResponse, len(subjects))
+	for i, s := range subjects {
+		responses[i] = ToSubjectResponse(s)
+	}
+	return responses
+}

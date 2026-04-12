@@ -16,7 +16,7 @@ export function GeneratePost(arg1:number,arg2:number):Promise<number>;
 
 export function GetAccounts():Promise<Array<models.AccountResponse>>;
 
-export function GetCategories():Promise<Array<models.Category>>;
+export function GetCategories():Promise<Array<models.CategoryResponse>>;
 
 export function GetPost(arg1:number):Promise<models.PostResponse>;
 
@@ -24,7 +24,7 @@ export function GetPosts():Promise<Array<models.PostResponse>>;
 
 export function GetSetting(arg1:string):Promise<string>;
 
-export function GetSubjects(arg1:number):Promise<Array<models.Subject>>;
+export function GetSubjects(arg1:number):Promise<Array<models.SubjectResponse>>;
 
 export function Greet(arg1:string):Promise<string>;
 

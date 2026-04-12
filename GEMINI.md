@@ -14,10 +14,11 @@ Blogramer는 사용자가 로컬 환경에서 다수의 블로그(Tistory, WordP
 - **Database**: 로컬 SQLite (CGO-free driver 사용)
 
 ## 3. 에이전트 행동 지침 (Agent Mandates)
-- **개발 사이클 준수 (MUST)**: 모든 기능 개발 후에는 반드시 다음 순서를 따릅니다.
-  1. **UI/로직 테스트**: `npx playwright test` 또는 관련 테스트 코드를 실행하여 검증.
-  2. **메모리 정리**: `shared/MEMORY.md`에 작업 내용 및 ADR 기록.
-  3. **깃 푸쉬**: 변경 사항을 커밋하고 `origin master`에 즉시 푸시.
+- **개발 사이클 준수 (MUST)**: 모든 기능 개발 후에는 반드시 다음 순서를 따르며, **테스트가 통과하지 않으면 절대 푸시하지 않습니다.**
+  1. **UI/로직 테스트**: `npx playwright test`를 실행하여 검증. 실패 시 디버깅 후 재테스트.
+  2. **Pass 확인**: 모든 테스트가 'Green' 상태임을 확인.
+  3. **메모리 정리**: `shared/MEMORY.md`에 작업 내용 및 ADR 기록.
+  4. **깃 푸쉬**: 테스트 통과가 확인된 변경 사항만 `origin master`에 푸시.
 - **규칙 우선**: 모든 코딩은 `.gemini/rules/wails-guidelines.md`에 명시된 규칙을 절대적으로 준수합니다.
 
 ## 4. 참조 문서 (Key References)

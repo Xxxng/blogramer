@@ -71,7 +71,7 @@ func (a *App) AddCategory(name string) (uint, error) {
 	return api.AddCategory(name)
 }
 
-func (a *App) GetCategories() ([]models.Category, error) {
+func (a *App) GetCategories() ([]models.CategoryResponse, error) {
 	return api.GetCategories()
 }
 
@@ -79,7 +79,7 @@ func (a *App) AddSubject(categoryID uint, keyword string) (uint, error) {
 	return api.AddSubject(categoryID, keyword)
 }
 
-func (a *App) GetSubjects(categoryID uint) ([]models.Subject, error) {
+func (a *App) GetSubjects(categoryID uint) ([]models.SubjectResponse, error) {
 	return api.GetSubjects(categoryID)
 }
 

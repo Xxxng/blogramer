@@ -39,3 +39,8 @@
   - **Accounts.tsx**: Wails 생성 모델에서 지원되지 않는 `models.Platform` 타입 캐스팅 제거 (string으로 대체).
   - **Posts.tsx**: 누락되었던 `useNavigate` 훅 선언 추가하여 `navigate` 에러 해결.
   - **Validation**: `npm run build`를 통해 모든 타입 체크와 빌드가 정상 통과됨을 확인함.
+
+- **2026-04-12 (7)**: Wails 바인딩 경고 해결 및 전체 DTO 패턴 적용 완료.
+  - **Cleanup**: `Category`, `Subject` 모델에 대한 전용 DTO(`CategoryResponse`, `SubjectResponse`)를 신설하여 `time.Time` 및 `gorm.DeletedAt` 관련 바인딩 경고 제거.
+  - **Consistency**: 모든 API 메서드(`GetCategories`, `GetSubjects` 등)가 DTO를 반환하도록 `app.go` 및 백엔드 로직 수정.
+  - **Final Sync**: `wails generate module` 성공 및 바인딩 파일 최신화 완료.
