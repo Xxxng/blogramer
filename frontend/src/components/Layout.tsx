@@ -13,10 +13,9 @@ const Layout: React.FC = () => {
 
   const navItems = [
     { name: '대시보드', path: '/', icon: <LayoutDashboard size={20} /> },
-    { name: '계정 연동', path: '/accounts', icon: <UserCircle size={20} /> },
-    { name: '주제/키워드', path: '/subjects', icon: <BookOpen size={20} /> },
-    { name: '발행 관리', path: '/posts', icon: <Send size={20} /> },
-    { name: '설정', path: '/settings', icon: <SettingsIcon size={20} /> },
+    { name: '계정 관리', path: '/accounts', icon: <UserCircle size={20} /> },
+    { name: '포스팅 관리', path: '/posts', icon: <Send size={20} /> },
+    { name: '환경 설정', path: '/settings', icon: <SettingsIcon size={20} /> },
   ];
 
   return (

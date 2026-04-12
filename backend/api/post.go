@@ -32,14 +32,20 @@ func GeneratePost(subjectID uint, accountID uint) (uint, error) {
 	client := openai.NewClient(apiKeySetting.Value)
 	
 	// 1. Generate Content using GPT-4o
-	prompt := fmt.Sprintf(`Write a detailed, SEO-optimized blog post about '%s' for a %s blog. 
-Category: %s
-Rules:
-- Use markdown formatting.
-- Include a catchy title at the beginning as # Title.
-- Write at least 5 paragraphs with subheadings (##).
-- Use a professional and engaging tone.
-- The content should be valuable and informative.`, subject.Keyword, account.Platform, subject.Category.Name)
+	prompt := fmt.Sprintf(`너는 전문 블로그 포스팅 작가야. 아래 정보를 바탕으로 SEO에 최적화된 고품질 블로그 글을 작성해줘.
+
+주제: %s
+카테고리: %s
+플랫폼: %s
+
+작성 규칙:
+- 반드시 한국어로 작성해줘.
+- 마크다운(Markdown) 형식을 사용해.
+- 제목은 맨 처음에 '# 제목' 형태로 작성해.
+- 독자의 관심을 끌 수 있는 서론, 3개 이상의 본문 소주제(##), 그리고 결론으로 구성해.
+- 문체는 친절하고 전문적인 느낌이 나도록 작성해.
+- 글자수는 공백 포함 1500자 내외로 풍부하게 작성해.
+- 독자에게 실질적인 정보와 가치를 제공하는 내용이어야 해.`, subject.Keyword, subject.Category.Name, account.Platform)
 
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
