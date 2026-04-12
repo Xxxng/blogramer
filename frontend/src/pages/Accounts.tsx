@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, ExternalLink } from 'lucide-react';
-// @ts-ignore
 import { GetAccounts, AddAccount, DeleteAccount } from '../../wailsjs/go/main/App';
+import { models } from '../../wailsjs/go/models';
 
 const Accounts: React.FC = () => {
-  const [accounts, setAccounts] = useState<any[]>([]);
+  const [accounts, setAccounts] = useState<models.AccountResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [newAccount, setNewAccount] = useState({
+  const [newAccount, setNewAccount] = useState<models.AccountRequest>(new models.AccountRequest({
     platform: 'Tistory',
     account_name: '',
     site_url: '',
     access_token: '',
     app_password: ''
-  });
+  }));
 
   const platforms = ['Tistory', 'WordPress', 'Naver', 'Blogger'];
 
@@ -35,15 +35,15 @@ const Accounts: React.FC = () => {
   const handleAddAccount = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await AddAccount(newAccount as any);
+      await AddAccount(newAccount);
       setShowAddModal(false);
-      setNewAccount({
+      setNewAccount(new models.AccountRequest({
         platform: 'Tistory',
         account_name: '',
         site_url: '',
         access_token: '',
         app_password: ''
-      });
+      }));
       fetchAccounts();
     } catch (err) {
       alert('계정 추가 실패: ' + err);
@@ -76,7 +76,7 @@ const Accounts: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {accounts.map((acc) => (
-          <div key={acc.ID} className="bg-slate-800 border border-slate-700 p-6 rounded-xl relative group">
+          <div key={acc.id} className="bg-slate-800 border border-slate-700 p-6 rounded-xl relative group">
             <div className="flex justify-between items-start mb-4">
               <span className={`px-2 py-1 text-xs font-bold rounded ${
                 acc.platform === 'Tistory' ? 'bg-orange-900 text-orange-200' :
@@ -86,7 +86,7 @@ const Accounts: React.FC = () => {
                 {acc.platform}
               </span>
               <button 
-                onClick={() => handleDelete(acc.ID)}
+                onClick={() => handleDelete(acc.id)}
                 className="text-slate-500 hover:text-red-400 transition-colors"
               >
                 <Trash2 size={18} />
@@ -120,7 +120,7 @@ const Accounts: React.FC = () => {
                 <label className="block text-sm font-medium text-slate-400 mb-1">플랫폼 선택</label>
                 <select 
                   value={newAccount.platform}
-                  onChange={(e) => setNewAccount({...newAccount, platform: e.target.value})}
+                  onChange={(e) => setNewAccount(new models.AccountRequest({...newAccount, platform: e.target.value as models.Platform}))}
                   className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
                 >
                   {platforms.map(p => <option key={p} value={p}>{p}</option>)}
@@ -133,7 +133,7 @@ const Accounts: React.FC = () => {
                   required
                   placeholder="예: 티스토리 메인"
                   value={newAccount.account_name}
-                  onChange={(e) => setNewAccount({...newAccount, account_name: e.target.value})}
+                  onChange={(e) => setNewAccount(new models.AccountRequest({...newAccount, account_name: e.target.value}))}
                   className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
@@ -144,7 +144,7 @@ const Accounts: React.FC = () => {
                   required
                   placeholder="티스토리: 블로그이름, 워드프레스: 도메인"
                   value={newAccount.site_url}
-                  onChange={(e) => setNewAccount({...newAccount, site_url: e.target.value})}
+                  onChange={(e) => setNewAccount(new models.AccountRequest({...newAccount, site_url: e.target.value}))}
                   className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
@@ -154,7 +154,7 @@ const Accounts: React.FC = () => {
                   type="password"
                   required
                   value={newAccount.access_token}
-                  onChange={(e) => setNewAccount({...newAccount, access_token: e.target.value})}
+                  onChange={(e) => setNewAccount(new models.AccountRequest({...newAccount, access_token: e.target.value}))}
                   className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
@@ -164,7 +164,7 @@ const Accounts: React.FC = () => {
                   <input 
                     type="password"
                     value={newAccount.app_password}
-                    onChange={(e) => setNewAccount({...newAccount, app_password: e.target.value})}
+                    onChange={(e) => setNewAccount(new models.AccountRequest({...newAccount, app_password: e.target.value}))}
                     className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
                   />
                 </div>

@@ -41,11 +41,40 @@ func ToAccountResponse(a Account) AccountResponse {
 	}
 }
 
-// ToAccountResponses converts a slice of Account models to AccountResponse DTOs
-func ToAccountResponses(accounts []Account) []AccountResponse {
-	responses := make([]AccountResponse, len(accounts))
-	for i, a := range accounts {
-		responses[i] = ToAccountResponse(a)
+// PostResponse represents the post data sent to the frontend
+type PostResponse struct {
+	ID           uint      `json:"id"`
+	Title        string    `json:"title"`
+	Platform     Platform  `json:"platform"`
+	Status       string    `json:"status"`
+	PublishedAt  *string   `json:"published_at"`
+	PostURL      string    `json:"post_url"`
+	ErrorMessage string    `json:"error_message"`
+}
+
+// ToPostResponse converts Post model to PostResponse DTO
+func ToPostResponse(p Post) PostResponse {
+	var publishedAt *string
+	if p.PublishedAt != nil {
+		s := p.PublishedAt.Format("2006-01-02 15:04")
+		publishedAt = &s
+	}
+	return PostResponse{
+		ID:           p.ID,
+		Title:        p.Title,
+		Platform:     p.Platform,
+		Status:       p.Status,
+		PublishedAt:  publishedAt,
+		PostURL:      p.PostURL,
+		ErrorMessage: p.ErrorMessage,
+	}
+}
+
+// ToPostResponses converts a slice of Post models to PostResponse DTOs
+func ToPostResponses(posts []Post) []PostResponse {
+	responses := make([]PostResponse, len(posts))
+	for i, p := range posts {
+		responses[i] = ToPostResponse(p)
 	}
 	return responses
 }

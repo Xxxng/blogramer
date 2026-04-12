@@ -8,5 +8,14 @@
   - **결정**: `.gemini/rules/` 및 `GEMINI.md` 진입점 체제로 전환하여 AI 에이전트의 강제성을 높임.
   - **결과**: AI가 작업을 시작할 때 명확한 룰을 우선적으로 로드하고, 불필요한 컨텍스트 혼선을 방지함.
 
+- **ADR-002: API 통신을 위한 DTO(Data Transfer Object) 패턴 도입 (2026-04-12)**
+  - **상황**: 백엔드의 GORM 모델을 프론트엔드에 직접 노출하여 타입 불일치 및 불필요한 필드(ID, CreatedAt 등) 노출 문제 발생.
+  - **결정**: `models/dto.go`를 신설하고 `AccountRequest`, `AccountResponse`, `PostResponse` 등을 정의하여 API 계층에서만 사용하도록 함.
+  - **결과**: Wails가 생성하는 TypeScript 타입의 정확도가 높아졌으며, 프론트엔드 코드에서 `any` 타입을 제거하여 타입 안정성을 확보함.
+
 ## 2. Session Logs
-- **2026-04-12**: 워크스페이스 구조 전면 리팩토링 진행 중.
+- **2026-04-12 (1)**: 워크스페이스 구조 전면 리팩토링 완료 및 `GEMINI.md` 진입점 구축.
+- **2026-04-12 (2)**: AI 포스팅 생성 엔진 고도화 및 관리 UI 구현.
+  - **AI Engine**: GPT-4o로 텍스트 생성 퀄리티 향상 및 DALL-E 3 연동을 통한 자동 이미지 삽입 기능 구현.
+  - **Post Management**: `Posts.tsx` 신설 및 `GetPosts`, `DeletePost` API 연동을 통한 목록 관리 및 발행 프로세스 구축.
+  - **Type Safety**: 프론트엔드-백엔드 간 DTO 패턴 적용으로 `any` 캐스팅 제거.

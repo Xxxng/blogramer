@@ -29,11 +29,11 @@ func (a *App) Greet(name string) string {
 }
 
 // Account APIs
-func (a *App) AddAccount(account models.Account) (uint, error) {
-	return api.AddAccount(account)
+func (a *App) AddAccount(req models.AccountRequest) (uint, error) {
+	return api.AddAccount(req)
 }
 
-func (a *App) GetAccounts() ([]models.Account, error) {
+func (a *App) GetAccounts() ([]models.AccountResponse, error) {
 	return api.GetAccounts()
 }
 
@@ -44,6 +44,14 @@ func (a *App) DeleteAccount(id uint) error {
 // Post APIs
 func (a *App) GeneratePost(subjectID uint, accountID uint) (uint, error) {
 	return api.GeneratePost(subjectID, accountID)
+}
+
+func (a *App) GetPosts() ([]models.PostResponse, error) {
+	return api.GetPosts()
+}
+
+func (a *App) DeletePost(id uint) error {
+	return api.DeletePost(id)
 }
 
 func (a *App) PublishPost(postID uint) error {

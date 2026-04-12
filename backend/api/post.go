@@ -30,12 +30,21 @@ func GeneratePost(subjectID uint, accountID uint) (uint, error) {
 	}
 
 	client := openai.NewClient(apiKeySetting.Value)
-	prompt := fmt.Sprintf("Write a detailed, SEO-optimized blog post about '%s' for a %s blog. Use markdown formatting. Category: %s", subject.Keyword, account.Platform, subject.Category.Name)
+	
+	// 1. Generate Content using GPT-4o
+	prompt := fmt.Sprintf(`Write a detailed, SEO-optimized blog post about '%s' for a %s blog. 
+Category: %s
+Rules:
+- Use markdown formatting.
+- Include a catchy title at the beginning as # Title.
+- Write at least 5 paragraphs with subheadings (##).
+- Use a professional and engaging tone.
+- The content should be valuable and informative.`, subject.Keyword, account.Platform, subject.Category.Name)
 
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT3Dot5Turbo,
+			Model: openai.GPT4o,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
@@ -46,11 +55,31 @@ func GeneratePost(subjectID uint, accountID uint) (uint, error) {
 	)
 
 	if err != nil {
-		return 0, fmt.Errorf("OpenAI API error: %v", err)
+		return 0, fmt.Errorf("OpenAI GPT-4o error: %v", err)
 	}
 
 	content := resp.Choices[0].Message.Content
-	title := fmt.Sprintf("%s - %s", subject.Category.Name, subject.Keyword) // Simple title for now
+
+	// 2. Generate Image using DALL-E 3
+	imagePrompt := fmt.Sprintf("A professional and high-quality blog header image about '%s'. Style: Modern, clean, and relevant to %s.", subject.Keyword, subject.Category.Name)
+	imgResp, err := client.CreateImage(
+		context.Background(),
+		openai.ImageRequest{
+			Prompt:         imagePrompt,
+			Model:          openai.CreateImageModelDallE3,
+			N:              1,
+			Size:           openai.CreateImageSize1024x1024,
+			ResponseFormat: openai.CreateImageResponseFormatURL,
+		},
+	)
+
+	if err == nil && len(imgResp.Data) > 0 {
+		imageURL := imgResp.Data[0].URL
+		// Prepend image to content
+		content = fmt.Sprintf("![Header Image](%s)\n\n%s", imageURL, content)
+	}
+
+	title := fmt.Sprintf("%s - %s", subject.Category.Name, subject.Keyword)
 
 	post := models.Post{
 		Title:     title,
@@ -69,6 +98,18 @@ func GeneratePost(subjectID uint, accountID uint) (uint, error) {
 	database.DB.Save(&subject)
 
 	return post.ID, nil
+}
+
+func GetPosts() ([]models.PostResponse, error) {
+	var posts []models.Post
+	if err := database.DB.Order("id desc").Find(&posts).Error; err != nil {
+		return nil, err
+	}
+	return models.ToPostResponses(posts), nil
+}
+
+func DeletePost(id uint) error {
+	return database.DB.Delete(&models.Post{}, id).Error
 }
 
 func PublishPost(postID uint) error {
