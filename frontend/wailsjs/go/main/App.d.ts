@@ -18,6 +18,8 @@ export function GetAccounts():Promise<Array<models.AccountResponse>>;
 
 export function GetCategories():Promise<Array<models.Category>>;
 
+export function GetPost(arg1:number):Promise<models.PostResponse>;
+
 export function GetPosts():Promise<Array<models.PostResponse>>;
 
 export function GetSetting(arg1:string):Promise<string>;
@@ -29,3 +31,5 @@ export function Greet(arg1:string):Promise<string>;
 export function PublishPost(arg1:number):Promise<void>;
 
 export function SetSetting(arg1:string,arg2:string):Promise<void>;
+
+export function UpdatePost(arg1:number,arg2:string,arg3:string):Promise<void>;

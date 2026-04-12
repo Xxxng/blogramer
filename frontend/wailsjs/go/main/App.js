@@ -34,6 +34,10 @@ export function GetCategories() {
   return window['go']['main']['App']['GetCategories']();
 }
 
+export function GetPost(arg1) {
+  return window['go']['main']['App']['GetPost'](arg1);
+}
+
 export function GetPosts() {
   return window['go']['main']['App']['GetPosts']();
 }
@@ -56,4 +60,8 @@ export function PublishPost(arg1) {
 
 export function SetSetting(arg1, arg2) {
   return window['go']['main']['App']['SetSetting'](arg1, arg2);
+}
+
+export function UpdatePost(arg1, arg2, arg3) {
+  return window['go']['main']['App']['UpdatePost'](arg1, arg2, arg3);
 }

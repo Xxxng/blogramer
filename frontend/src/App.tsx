@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import Accounts from './pages/Accounts';
 import Settings from './pages/Settings';
 import Posts from './pages/Posts';
+import PostEditor from './pages/PostEditor';
 
 // Placeholders for other pages
 const Subjects = () => <div className="p-8 bg-slate-800 rounded-xl text-slate-400">주제/키워드 페이지 준비 중...</div>;

@@ -84,6 +84,7 @@ export namespace models {
 	export class PostResponse {
 	    id: number;
 	    title: string;
+	    content: string;
 	    platform: string;
 	    status: string;
 	    published_at?: string;
@@ -98,6 +99,7 @@ export namespace models {
 	        if ('string' === typeof source) source = JSON.parse(source);
 	        this.id = source["id"];
 	        this.title = source["title"];
+	        this.content = source["content"];
 	        this.platform = source["platform"];
 	        this.status = source["status"];
 	        this.published_at = source["published_at"];

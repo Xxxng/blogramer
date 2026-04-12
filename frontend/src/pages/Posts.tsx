@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, Send, Eye, Trash2, Clock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { GetAccounts, GeneratePost, PublishPost, GetPosts, DeletePost } from '../../wailsjs/go/main/App';
 import { models } from '../../wailsjs/go/models';
 
 const Posts: React.FC = () => {
+  const navigate = useNavigate();
   const [accounts, setAccounts] = useState<models.AccountResponse[]>([]);
   const [selectedAccount, setSelectedAccount] = useState<number>(0);
   const [keyword, setKeyword] = useState('');
