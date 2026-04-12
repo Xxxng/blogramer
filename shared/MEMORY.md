@@ -23,3 +23,8 @@
 - **2026-04-12 (3)**: UI 테스트 환경 구축 및 개발 사이클 원칙(Mandate) 수립.
   - **UI Testing**: Playwright 설치 및 네비게이션 자동화 테스트(`navigation.spec.ts`) 작성.
   - **Work Principle**: "기능 개발 -> UI 테스트 -> 메모리 정리 -> 깃 푸쉬" 사이클을 `GEMINI.md`에 명시하고 강제화함.
+
+- **2026-04-12 (4)**: Wails 바인딩 이슈 해결 및 DTO 동기화.
+  - **Bug Fix**: `models/dto.go`에서 누락되었던 `ToAccountResponses` 함수 추가 및 백엔드 컴파일 에러 해결.
+  - **Binding Sync**: `wails generate module` 명령을 통해 프론트엔드 바인딩 파일(`wailsjs/`) 강제 갱신 완료.
+  - **Validation**: `GetPosts`, `DeletePost` 등이 정상적으로 TS 모델에 포함되었음을 확인함.

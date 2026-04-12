@@ -30,7 +30,7 @@ func (r *AccountRequest) ToAccount() Account {
 	}
 }
 
-// ToResponse converts Account model to AccountResponse DTO
+// ToAccountResponse converts Account model to AccountResponse DTO
 func ToAccountResponse(a Account) AccountResponse {
 	return AccountResponse{
 		ID:          a.ID,
@@ -39,6 +39,15 @@ func ToAccountResponse(a Account) AccountResponse {
 		SiteURL:     a.SiteURL,
 		IsActive:    a.IsActive,
 	}
+}
+
+// ToAccountResponses converts a slice of Account models to AccountResponse DTOs
+func ToAccountResponses(accounts []Account) []AccountResponse {
+	responses := make([]AccountResponse, len(accounts))
+	for i, a := range accounts {
+		responses[i] = ToAccountResponse(a)
+	}
+	return responses
 }
 
 // PostResponse represents the post data sent to the frontend

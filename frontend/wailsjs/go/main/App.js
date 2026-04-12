@@ -18,6 +18,10 @@ export function DeleteAccount(arg1) {
   return window['go']['main']['App']['DeleteAccount'](arg1);
 }
 
+export function DeletePost(arg1) {
+  return window['go']['main']['App']['DeletePost'](arg1);
+}
+
 export function GeneratePost(arg1, arg2) {
   return window['go']['main']['App']['GeneratePost'](arg1, arg2);
 }
@@ -28,6 +32,10 @@ export function GetAccounts() {
 
 export function GetCategories() {
   return window['go']['main']['App']['GetCategories']();
+}
+
+export function GetPosts() {
+  return window['go']['main']['App']['GetPosts']();
 }
 
 export function GetSetting(arg1) {
