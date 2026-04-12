@@ -112,7 +112,7 @@ func generateContent(provider string, subject models.Subject, platform models.Pl
 			return "", err
 		}
 		defer client.Close()
-		model := client.GenerativeModel("gemini-1.5-pro")
+		model := client.GenerativeModel("gemini-1.5-flash")
 		resp, err := model.GenerateContent(ctx, genai.Text(prompt))
 		if err != nil {
 			return "", err
