@@ -21,6 +21,8 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	// Start Scheduler Background Worker
+	go api.StartScheduler(ctx)
 }
 
 // Greet returns a greeting for the given name
@@ -68,6 +70,23 @@ func (a *App) DeletePost(id uint) error {
 
 func (a *App) PublishPost(postID uint) error {
 	return api.PublishPost(postID)
+}
+
+// Schedule APIs
+func (a *App) AddSchedule(postID uint, scheduledAt string) error {
+	return api.AddSchedule(postID, scheduledAt)
+}
+
+func (a *App) GetSchedules() ([]models.ScheduleResponse, error) {
+	return api.GetSchedules()
+}
+
+func (a *App) CancelSchedule(id uint) error {
+	return api.CancelSchedule(id)
+}
+
+func (a *App) GetScheduleByPostID(postID uint) (models.ScheduleResponse, error) {
+	return api.GetScheduleByPostID(postID)
 }
 
 // Dashboard API

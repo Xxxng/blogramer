@@ -55,3 +55,10 @@
   - **AI Generation**: `GeneratePostWithKeyword` API를 신설하여 프론트엔드에서 입력한 키워드가 실제 AI 프롬프트에 반영되지 않고 하드코딩된 ID(1)를 참조하던 버그 해결.
   - **Type Safety**: 신규 DTO(`DashboardStats`) 정의 및 Wails 바인딩 갱신을 통해 프론트엔드-백엔드 간 타입 일관성 유지.
   - **Validation**: `npm run build`를 통해 프론트엔드 타입 체크 완료 및 백엔드 컴파일 확인.
+
+- **2026-04-12 (10)**: 예약 발행 스케줄러(Post Scheduler) 엔진 및 UI 구현.
+  - **Engine**: 백그라운드 워커(`StartScheduler`)를 구현하여 매분마다 예약 건을 확인하고 발행 프로세스 수행.
+  - **Offline Handling**: 앱 종료 등으로 예약 시간을 놓친 경우, PRD 명세에 따라 자동으로 +24시간 연기하는 "오프라인 보상 로직" 구현.
+  - **API**: `AddSchedule`, `GetSchedules`, `CancelSchedule` 등의 API를 신설하여 예약 관리 워크플로우 완성.
+  - **Frontend UI**: `PostEditor.tsx`에 예약 발행 버튼 및 모달(datetime picker)을 추가하여 사용자가 원하는 시간에 포스팅을 예약할 수 있도록 구현.
+  - **Validation**: `wails build`를 통해 전체 빌드 성공 확인 및 Playwright 네비게이션 테스트(4/4) 통과.

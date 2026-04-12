@@ -6,7 +6,11 @@ export function AddAccount(arg1:models.AccountRequest):Promise<number>;
 
 export function AddCategory(arg1:string):Promise<number>;
 
+export function AddSchedule(arg1:number,arg2:string):Promise<void>;
+
 export function AddSubject(arg1:number,arg2:string):Promise<number>;
+
+export function CancelSchedule(arg1:number):Promise<void>;
 
 export function DeleteAccount(arg1:number):Promise<void>;
 
@@ -25,6 +29,10 @@ export function GetDashboardStats():Promise<models.DashboardStats>;
 export function GetPost(arg1:number):Promise<models.PostResponse>;
 
 export function GetPosts():Promise<Array<models.PostResponse>>;
+
+export function GetScheduleByPostID(arg1:number):Promise<models.ScheduleResponse>;
+
+export function GetSchedules():Promise<Array<models.ScheduleResponse>>;
 
 export function GetSetting(arg1:string):Promise<string>;
 

@@ -135,6 +135,7 @@ const Posts: React.FC = () => {
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${
                       post.status === 'published' ? 'bg-green-900 text-green-200' :
+                      post.status === 'scheduled' ? 'bg-blue-900 text-blue-200' :
                       post.status === 'draft' ? 'bg-amber-900 text-amber-200' :
                       'bg-slate-700 text-slate-300'
                     }`}>

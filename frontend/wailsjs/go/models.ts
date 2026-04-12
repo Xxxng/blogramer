@@ -61,6 +61,7 @@ export namespace models {
 	    platform: string;
 	    status: string;
 	    published_at?: string;
+	    scheduled_at?: string;
 	    post_url: string;
 	    error_message: string;
 	
@@ -76,6 +77,7 @@ export namespace models {
 	        this.platform = source["platform"];
 	        this.status = source["status"];
 	        this.published_at = source["published_at"];
+	        this.scheduled_at = source["scheduled_at"];
 	        this.post_url = source["post_url"];
 	        this.error_message = source["error_message"];
 	    }
@@ -117,6 +119,26 @@ export namespace models {
 		}
 	}
 	
+	export class ScheduleResponse {
+	    id: number;
+	    post_id: number;
+	    post_title: string;
+	    scheduled_at: string;
+	    is_executed: boolean;
+	
+	    static createFrom(source: any = {}) {
+	        return new ScheduleResponse(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.id = source["id"];
+	        this.post_id = source["post_id"];
+	        this.post_title = source["post_title"];
+	        this.scheduled_at = source["scheduled_at"];
+	        this.is_executed = source["is_executed"];
+	    }
+	}
 	export class SubjectResponse {
 	    id: number;
 	    category_id: number;

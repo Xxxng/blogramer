@@ -58,6 +58,7 @@ type PostResponse struct {
 	Platform     Platform  `json:"platform"`
 	Status       string    `json:"status"`
 	PublishedAt  *string   `json:"published_at"`
+	ScheduledAt  *string   `json:"scheduled_at"`
 	PostURL      string    `json:"post_url"`
 	ErrorMessage string    `json:"error_message"`
 }
@@ -79,6 +80,41 @@ func ToPostResponse(p Post) PostResponse {
 		PostURL:      p.PostURL,
 		ErrorMessage: p.ErrorMessage,
 	}
+}
+
+// ScheduleRequest represents the data needed to schedule a post
+type ScheduleRequest struct {
+	PostID      uint   `json:"post_id"`
+	ScheduledAt string `json:"scheduled_at"` // ISO8601 string
+}
+
+// ScheduleResponse represents the schedule data sent to the frontend
+type ScheduleResponse struct {
+	ID          uint   `json:"id"`
+	PostID      uint   `json:"post_id"`
+	PostTitle   string `json:"post_title"`
+	ScheduledAt string `json:"scheduled_at"`
+	IsExecuted  bool   `json:"is_executed"`
+}
+
+// ToScheduleResponse converts Schedule model to ScheduleResponse DTO
+func ToScheduleResponse(s Schedule) ScheduleResponse {
+	return ScheduleResponse{
+		ID:          s.ID,
+		PostID:      s.PostID,
+		PostTitle:   s.Post.Title,
+		ScheduledAt: s.ScheduledAt.Format("2006-01-02 15:04"),
+		IsExecuted:  s.IsExecuted,
+	}
+}
+
+// ToScheduleResponses converts a slice of Schedule models to ScheduleResponse DTOs
+func ToScheduleResponses(schedules []Schedule) []ScheduleResponse {
+	responses := make([]ScheduleResponse, len(schedules))
+	for i, s := range schedules {
+		responses[i] = ToScheduleResponse(s)
+	}
+	return responses
 }
 
 // ToPostResponses converts a slice of Post models to PostResponse DTOs

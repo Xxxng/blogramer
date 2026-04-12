@@ -10,8 +10,16 @@ export function AddCategory(arg1) {
   return window['go']['main']['App']['AddCategory'](arg1);
 }
 
+export function AddSchedule(arg1, arg2) {
+  return window['go']['main']['App']['AddSchedule'](arg1, arg2);
+}
+
 export function AddSubject(arg1, arg2) {
   return window['go']['main']['App']['AddSubject'](arg1, arg2);
+}
+
+export function CancelSchedule(arg1) {
+  return window['go']['main']['App']['CancelSchedule'](arg1);
 }
 
 export function DeleteAccount(arg1) {
@@ -48,6 +56,14 @@ export function GetPost(arg1) {
 
 export function GetPosts() {
   return window['go']['main']['App']['GetPosts']();
+}
+
+export function GetScheduleByPostID(arg1) {
+  return window['go']['main']['App']['GetScheduleByPostID'](arg1);
+}
+
+export function GetSchedules() {
+  return window['go']['main']['App']['GetSchedules']();
 }
 
 export function GetSetting(arg1) {
