@@ -18,25 +18,29 @@ func GeneratePost(subjectID uint, accountID uint) (uint, error) {
 		return 0, err
 	}
 
-	var account models.Account
-	if err := database.DB.First(&account, accountID).Error; err != nil {
-		return 0, err
+	var platform models.Platform = "Generic"
+
+	if accountID > 0 {
+		var account models.Account
+		if err := database.DB.First(&account, accountID).Error; err == nil {
+			platform = account.Platform
+		}
 	}
 
 	// Get OpenAI API Key from Settings
 	var apiKeySetting models.Setting
 	if err := database.DB.Where("key = ?", "openai_api_key").First(&apiKeySetting).Error; err != nil {
-		return 0, errors.New("OpenAI API Key not set")
+		return 0, errors.New("OpenAI API Key not set in Settings")
 	}
 
 	client := openai.NewClient(apiKeySetting.Value)
 	
-	// 1. Generate Content using GPT-4o
+	// 1. Content Prompt (Refined for quality)
 	prompt := fmt.Sprintf(`너는 전문 블로그 포스팅 작가야. 아래 정보를 바탕으로 SEO에 최적화된 고품질 블로그 글을 작성해줘.
 
 주제: %s
 카테고리: %s
-플랫폼: %s
+대상 플랫폼: %s
 
 작성 규칙:
 - 반드시 한국어로 작성해줘.
@@ -45,7 +49,7 @@ func GeneratePost(subjectID uint, accountID uint) (uint, error) {
 - 독자의 관심을 끌 수 있는 서론, 3개 이상의 본문 소주제(##), 그리고 결론으로 구성해.
 - 문체는 친절하고 전문적인 느낌이 나도록 작성해.
 - 글자수는 공백 포함 1500자 내외로 풍부하게 작성해.
-- 독자에게 실질적인 정보와 가치를 제공하는 내용이어야 해.`, subject.Keyword, subject.Category.Name, account.Platform)
+- 독자에게 실질적인 정보와 가치를 제공하는 내용이어야 해.`, subject.Keyword, subject.Category.Name, platform)
 
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
@@ -66,7 +70,7 @@ func GeneratePost(subjectID uint, accountID uint) (uint, error) {
 
 	content := resp.Choices[0].Message.Content
 
-	// 2. Generate Image using DALL-E 3
+	// 2. Image Generation
 	imagePrompt := fmt.Sprintf("A professional and high-quality blog header image about '%s'. Style: Modern, clean, and relevant to %s.", subject.Keyword, subject.Category.Name)
 	imgResp, err := client.CreateImage(
 		context.Background(),
@@ -81,7 +85,6 @@ func GeneratePost(subjectID uint, accountID uint) (uint, error) {
 
 	if err == nil && len(imgResp.Data) > 0 {
 		imageURL := imgResp.Data[0].URL
-		// Prepend image to content
 		content = fmt.Sprintf("![Header Image](%s)\n\n%s", imageURL, content)
 	}
 
@@ -90,8 +93,8 @@ func GeneratePost(subjectID uint, accountID uint) (uint, error) {
 	post := models.Post{
 		Title:     title,
 		Content:   content,
-		Platform:  account.Platform,
-		AccountID: account.ID,
+		Platform:  platform,
+		AccountID: accountID,
 		Status:    "draft",
 	}
 
@@ -99,7 +102,6 @@ func GeneratePost(subjectID uint, accountID uint) (uint, error) {
 		return 0, err
 	}
 
-	// Mark subject as used
 	subject.IsUsed = true
 	database.DB.Save(&subject)
 

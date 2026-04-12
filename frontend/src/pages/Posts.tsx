@@ -37,8 +37,8 @@ const Posts: React.FC = () => {
   };
 
   const handleGenerate = async () => {
-    if (!selectedAccount || !keyword) {
-      alert('계정과 키워드를 입력해주세요.');
+    if (!keyword) {
+      alert('키워드를 입력해주세요.');
       return;
     }
 
