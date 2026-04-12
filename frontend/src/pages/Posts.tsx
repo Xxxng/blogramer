@@ -141,7 +141,11 @@ const Posts: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 text-sm text-slate-400">{post.published_at || '-'}</td>
                   <td className="px-6 py-4 text-right space-x-2">
-                    <button className="p-2 hover:bg-slate-600 rounded-lg text-slate-400 transition-colors" title="미리보기 및 편집">
+                    <button 
+                      onClick={() => navigate(`/posts/edit/${post.id}`)}
+                      className="p-2 hover:bg-slate-600 rounded-lg text-slate-400 transition-colors" 
+                      title="미리보기 및 편집"
+                    >
                       <Eye size={18} />
                     </button>
                     <button 

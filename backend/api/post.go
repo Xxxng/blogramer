@@ -108,6 +108,21 @@ func GetPosts() ([]models.PostResponse, error) {
 	return models.ToPostResponses(posts), nil
 }
 
+func GetPost(id uint) (models.PostResponse, error) {
+	var post models.Post
+	if err := database.DB.First(&post, id).Error; err != nil {
+		return models.PostResponse{}, err
+	}
+	return models.ToPostResponse(post), nil
+}
+
+func UpdatePost(id uint, title string, content string) error {
+	return database.DB.Model(&models.Post{}).Where("id = ?", id).Updates(map[string]interface{}{
+		"title":   title,
+		"content": content,
+	}).Error
+}
+
 func DeletePost(id uint) error {
 	return database.DB.Delete(&models.Post{}, id).Error
 }

@@ -28,3 +28,8 @@
   - **Bug Fix**: `models/dto.go`에서 누락되었던 `ToAccountResponses` 함수 추가 및 백엔드 컴파일 에러 해결.
   - **Binding Sync**: `wails generate module` 명령을 통해 프론트엔드 바인딩 파일(`wailsjs/`) 강제 갱신 완료.
   - **Validation**: `GetPosts`, `DeletePost` 등이 정상적으로 TS 모델에 포함되었음을 확인함.
+
+- **2026-04-12 (5)**: 마크다운 에디터 UI 구현 및 포스팅 관리 워크플로우 완성.
+  - **Backend**: 포스팅 상세 조회(`GetPost`) 및 내용 수정(`UpdatePost`) API 구현. `PostResponse` DTO에 `Content` 필드 추가.
+  - **Frontend**: `PostEditor.tsx` 신설 및 `textarea` 기반 편집/미리보기 기능 구현.
+  - **Navigation**: `/posts/edit/:id` 라우트 등록 및 포스팅 목록 화면과 에디터 간 이동 연결 완료.

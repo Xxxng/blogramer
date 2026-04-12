@@ -50,6 +50,14 @@ func (a *App) GetPosts() ([]models.PostResponse, error) {
 	return api.GetPosts()
 }
 
+func (a *App) GetPost(id uint) (models.PostResponse, error) {
+	return api.GetPost(id)
+}
+
+func (a *App) UpdatePost(id uint, title string, content string) error {
+	return api.UpdatePost(id, title, content)
+}
+
 func (a *App) DeletePost(id uint) error {
 	return api.DeletePost(id)
 }

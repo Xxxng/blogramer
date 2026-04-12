@@ -54,6 +54,7 @@ func ToAccountResponses(accounts []Account) []AccountResponse {
 type PostResponse struct {
 	ID           uint      `json:"id"`
 	Title        string    `json:"title"`
+	Content      string    `json:"content"`
 	Platform     Platform  `json:"platform"`
 	Status       string    `json:"status"`
 	PublishedAt  *string   `json:"published_at"`
@@ -71,6 +72,7 @@ func ToPostResponse(p Post) PostResponse {
 	return PostResponse{
 		ID:           p.ID,
 		Title:        p.Title,
+		Content:      p.Content,
 		Platform:     p.Platform,
 		Status:       p.Status,
 		PublishedAt:  publishedAt,

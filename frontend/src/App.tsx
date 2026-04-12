@@ -18,6 +18,7 @@ function App() {
           <Route path="accounts" element={<Accounts />} />
           <Route path="subjects" element={<Subjects />} />
           <Route path="posts" element={<Posts />} />
+          <Route path="posts/edit/:id" element={<PostEditor />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
