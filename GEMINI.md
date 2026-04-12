@@ -14,10 +14,11 @@ Blogramer는 사용자가 로컬 환경에서 다수의 블로그(Tistory, WordP
 - **Database**: 로컬 SQLite (CGO-free driver 사용)
 
 ## 3. 에이전트 행동 지침 (Agent Mandates)
+- **개발 사이클 준수 (MUST)**: 모든 기능 개발 후에는 반드시 다음 순서를 따릅니다.
+  1. **UI/로직 테스트**: `npx playwright test` 또는 관련 테스트 코드를 실행하여 검증.
+  2. **메모리 정리**: `shared/MEMORY.md`에 작업 내용 및 ADR 기록.
+  3. **깃 푸쉬**: 변경 사항을 커밋하고 `origin master`에 즉시 푸시.
 - **규칙 우선**: 모든 코딩은 `.gemini/rules/wails-guidelines.md`에 명시된 규칙을 절대적으로 준수합니다.
-- **문서 동기화**: 주요 기능 구현이나 아키텍처 결정 시 `shared/MEMORY.md`에 ADR 형식으로 기록합니다.
-- **보안 최우선**: 사용자의 API Key, 액세스 토큰 등 민감한 정보는 절대로 로그에 출력하거나 외부로 노출하지 않으며, 로컬 DB(`Setting` 모델)를 통해서만 관리합니다.
-- **검증 필수**: 코드 변경 후에는 `wails dev` 환경에서 정상 작동 여부를 확인하고, 가능하다면 테스트 코드를 추가합니다.
 
 ## 4. 참조 문서 (Key References)
 - `shared/CPS.md`: 프로젝트 배경, 문제 정의 및 해결책 (Why & What)

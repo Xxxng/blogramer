@@ -19,3 +19,7 @@
   - **AI Engine**: GPT-4o로 텍스트 생성 퀄리티 향상 및 DALL-E 3 연동을 통한 자동 이미지 삽입 기능 구현.
   - **Post Management**: `Posts.tsx` 신설 및 `GetPosts`, `DeletePost` API 연동을 통한 목록 관리 및 발행 프로세스 구축.
   - **Type Safety**: 프론트엔드-백엔드 간 DTO 패턴 적용으로 `any` 캐스팅 제거.
+
+- **2026-04-12 (3)**: UI 테스트 환경 구축 및 개발 사이클 원칙(Mandate) 수립.
+  - **UI Testing**: Playwright 설치 및 네비게이션 자동화 테스트(`navigation.spec.ts`) 작성.
+  - **Work Principle**: "기능 개발 -> UI 테스트 -> 메모리 정리 -> 깃 푸쉬" 사이클을 `GEMINI.md`에 명시하고 강제화함.
