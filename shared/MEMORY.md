@@ -44,3 +44,8 @@
   - **Cleanup**: `Category`, `Subject` 모델에 대한 전용 DTO(`CategoryResponse`, `SubjectResponse`)를 신설하여 `time.Time` 및 `gorm.DeletedAt` 관련 바인딩 경고 제거.
   - **Consistency**: 모든 API 메서드(`GetCategories`, `GetSubjects` 등)가 DTO를 반환하도록 `app.go` 및 백엔드 로직 수정.
   - **Final Sync**: `wails generate module` 성공 및 바인딩 파일 최신화 완료.
+
+- **2026-04-12 (8)**: 리소스 빌드 에러 해결 및 첫 번째 UI 테스트 통과.
+  - **Bug Fix**: `wails.json` 설정 변경으로 발생한 `Blogramer-res.syso` 누락 문제를 `wails build`를 통한 리소스 재생성으로 해결.
+  - **UI Testing**: Playwright를 이용한 네비게이션 테스트(`navigation.spec.ts`)를 실행하여 모든 항목(대시보드, 계정, 포스팅, 설정) 통과 확인.
+  - **Mandate Check**: "No Pass, No Push" 원칙에 따라 테스트 성공 후 푸시 프로세스 진행.
