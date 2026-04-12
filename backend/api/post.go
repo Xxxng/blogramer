@@ -37,31 +37,24 @@ func GeneratePost(subjectID uint, accountID uint) (uint, error) {
 		provider = "openai" // default
 	}
 
-	// 2. Generate Content using preferred AI
-	content, err := generateContent(provider, subject, platform)
+	var textModelSetting models.Setting
+	database.DB.Where("key = ?", "text_model").First(&textModelSetting)
+	textModel := textModelSetting.Value
+
+	var imageModelSetting models.Setting
+	database.DB.Where("key = ?", "image_model").First(&imageModelSetting)
+	imageModel := imageModelSetting.Value
+
+	// 2. Generate Content
+	content, err := generateContent(provider, textModel, subject, platform)
 	if err != nil {
 		return 0, err
 	}
 
-	// 3. Generate Image using OpenAI (DALL-E 3) - Always uses OpenAI for images
-	var openAIKey models.Setting
-	if err := database.DB.Where("key = ?", "openai_api_key").First(&openAIKey).Error; err == nil && openAIKey.Value != "" {
-		client := openai.NewClient(openAIKey.Value)
-		imagePrompt := fmt.Sprintf("A professional and high-quality blog header image about '%s'. Style: Modern, clean, and relevant to %s.", subject.Keyword, subject.Category.Name)
-		imgResp, err := client.CreateImage(
-			context.Background(),
-			openai.ImageRequest{
-				Prompt:         imagePrompt,
-				Model:          openai.CreateImageModelDallE3,
-				N:              1,
-				Size:           openai.CreateImageSize1024x1024,
-				ResponseFormat: openai.CreateImageResponseFormatURL,
-			},
-		)
-		if err == nil && len(imgResp.Data) > 0 {
-			imageURL := imgResp.Data[0].URL
-			content = fmt.Sprintf("![Header Image](%s)\n\n%s", imageURL, content)
-		}
+	// 3. Generate Image
+	imageURL, err := generateImage(provider, imageModel, subject)
+	if err == nil && imageURL != "" {
+		content = fmt.Sprintf("![Header Image](%s)\n\n%s", imageURL, content)
 	}
 
 	title := fmt.Sprintf("%s - %s", subject.Category.Name, subject.Keyword)
@@ -84,7 +77,7 @@ func GeneratePost(subjectID uint, accountID uint) (uint, error) {
 	return post.ID, nil
 }
 
-func generateContent(provider string, subject models.Subject, platform models.Platform) (string, error) {
+func generateContent(provider string, modelName string, subject models.Subject, platform models.Platform) (string, error) {
 	prompt := fmt.Sprintf(`너는 전문 블로그 포스팅 작가야. 아래 정보를 바탕으로 SEO에 최적화된 고품질 블로그 글을 작성해줘.
 
 주제: %s
@@ -106,13 +99,16 @@ func generateContent(provider string, subject models.Subject, platform models.Pl
 		if err := database.DB.Where("key = ?", "gemini_api_key").First(&apiKey).Error; err != nil || apiKey.Value == "" {
 			return "", errors.New("Gemini API Key not set")
 		}
+		if modelName == "" {
+			modelName = "gemini-1.5-flash"
+		}
 		ctx := context.Background()
 		client, err := genai.NewClient(ctx, option.WithAPIKey(apiKey.Value))
 		if err != nil {
 			return "", err
 		}
 		defer client.Close()
-		model := client.GenerativeModel("gemini-1.5-flash")
+		model := client.GenerativeModel(modelName)
 		resp, err := model.GenerateContent(ctx, genai.Text(prompt))
 		if err != nil {
 			return "", err
@@ -127,9 +123,12 @@ func generateContent(provider string, subject models.Subject, platform models.Pl
 		if err := database.DB.Where("key = ?", "claude_api_key").First(&apiKey).Error; err != nil || apiKey.Value == "" {
 			return "", errors.New("Claude API Key not set")
 		}
+		if modelName == "" {
+			modelName = string(anthropic.ModelClaude3Dot5SonnetLatest)
+		}
 		client := anthropic.NewClient(apiKey.Value)
 		resp, err := client.CreateMessages(context.Background(), anthropic.MessagesRequest{
-			Model: anthropic.ModelClaude3Dot5SonnetLatest,
+			Model: anthropic.Model(modelName),
 			Messages: []anthropic.Message{
 				{Role: anthropic.RoleUser, Content: []anthropic.MessageContent{anthropic.NewTextMessageContent(prompt)}},
 			},
@@ -148,9 +147,12 @@ func generateContent(provider string, subject models.Subject, platform models.Pl
 		if err := database.DB.Where("key = ?", "openai_api_key").First(&apiKey).Error; err != nil || apiKey.Value == "" {
 			return "", errors.New("OpenAI API Key not set")
 		}
+		if modelName == "" {
+			modelName = openai.GPT4o
+		}
 		client := openai.NewClient(apiKey.Value)
 		resp, err := client.CreateChatCompletion(context.Background(), openai.ChatCompletionRequest{
-			Model: openai.GPT4o,
+			Model:    modelName,
 			Messages: []openai.ChatCompletionMessage{{Role: openai.ChatMessageRoleUser, Content: prompt}},
 		})
 		if err != nil {
@@ -158,6 +160,59 @@ func generateContent(provider string, subject models.Subject, platform models.Pl
 		}
 		return resp.Choices[0].Message.Content, nil
 	}
+}
+
+func generateImage(provider string, modelName string, subject models.Subject) (string, error) {
+	imagePrompt := fmt.Sprintf("A professional and high-quality blog header image about '%s'. Style: Modern, clean, and relevant to %s.", subject.Keyword, subject.Category.Name)
+
+	// Currently, we mostly rely on OpenAI for high-quality DALL-E 3 images.
+	// We check if the user specifically requested a model that looks like an OpenAI model or if they use OpenAI provider.
+	
+	var openAIKey models.Setting
+	database.DB.Where("key = ?", "openai_api_key").First(&openAIKey)
+
+	// If image provider is gemini and they have a model name, we could try Imagen via REST (not fully in SDK yet)
+	// For MVP simplicity, if provider is OpenAI or if modelName is dall-e, we use OpenAI.
+	if (provider == "openai" || modelName == "dall-e-3" || modelName == "dall-e-2") && openAIKey.Value != "" {
+		if modelName == "" {
+			modelName = openai.CreateImageModelDallE3
+		}
+		client := openai.NewClient(openAIKey.Value)
+		imgResp, err := client.CreateImage(
+			context.Background(),
+			openai.ImageRequest{
+				Prompt:         imagePrompt,
+				Model:          modelName,
+				N:              1,
+				Size:           openai.CreateImageSize1024x1024,
+				ResponseFormat: openai.CreateImageResponseFormatURL,
+			},
+		)
+		if err != nil {
+			return "", err
+		}
+		return imgResp.Data[0].URL, nil
+	}
+
+	// Fallback to OpenAI if key exists, otherwise return error
+	if openAIKey.Value != "" {
+		client := openai.NewClient(openAIKey.Value)
+		imgResp, err := client.CreateImage(
+			context.Background(),
+			openai.ImageRequest{
+				Prompt:         imagePrompt,
+				Model:          openai.CreateImageModelDallE3,
+				N:              1,
+				Size:           openai.CreateImageSize1024x1024,
+				ResponseFormat: openai.CreateImageResponseFormatURL,
+			},
+		)
+		if err == nil {
+			return imgResp.Data[0].URL, nil
+		}
+	}
+
+	return "", errors.New("image generation not supported for this configuration or API key missing")
 }
 
 func GeneratePostWithKeyword(keyword string, accountID uint) (uint, error) {

@@ -74,3 +74,9 @@
   - **Backend Refactoring**: `GeneratePost` 로직을 리팩토링하여 설정된 엔진에 따라 각기 다른 SDK(OpenAI, Google GenAI, Anthropic)를 호출하도록 구현.
   - **Image Gen**: 텍스트 생성 엔진과 관계없이 이미지 생성은 고품질 DALL-E 3(OpenAI)를 유지하도록 설계.
   - **Stability**: 각 AI 제공자의 응답 형식을 통일하고, 계정 미연동 시에도 정상 동작하도록 예외 처리 강화.
+
+- **2026-04-12 (13)**: 텍스트 및 이미지 생성 모델 개별 선택 기능 구현.
+  - **Model Selection**: `Settings.tsx`에서 텍스트 모델명과 이미지 생성 모델명을 사용자가 직접 입력/수정할 수 있도록 고도화.
+  - **Gemini 2.0 Support**: 최신 Gemini 2.0 Flash 모델을 기본값으로 설정하고, 멀티모달 환경에 대응할 수 있도록 백엔드 로직 업데이트.
+  - **Flexibility**: 특정 AI 제공자에 종속되지 않고, 사용자가 원하는 모델 조합(예: Claude 텍스트 + DALL-E 3 이미지)으로 포스팅 생성이 가능하도록 아키텍처 개선.
+  - **Validation**: `wails build`를 통한 컴파일 안정성 확인 및 최종 프로덕션 빌드 완료.

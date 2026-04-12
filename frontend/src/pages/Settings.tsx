@@ -7,7 +7,9 @@ const Settings: React.FC = () => {
   const [openAIKey, setOpenAIKey] = useState('');
   const [geminiKey, setGeminiKey] = useState('');
   const [claudeKey, setClaudeKey] = useState('');
-  const [preferredAI, setPreferredAI] = useState('openai');
+  const [preferredAI, setPreferredAI] = useState('gemini');
+  const [textModel, setTextModel] = useState('gemini-2.0-flash');
+  const [imageModel, setImageModel] = useState('gemini-2.0-flash-image');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -20,11 +22,15 @@ const Settings: React.FC = () => {
       const gKey = await GetSetting('gemini_api_key');
       const cKey = await GetSetting('claude_api_key');
       const pref = await GetSetting('preferred_ai');
+      const tMod = await GetSetting('text_model');
+      const iMod = await GetSetting('image_model');
       
       setOpenAIKey(oKey || '');
       setGeminiKey(gKey || '');
       setClaudeKey(cKey || '');
-      setPreferredAI(pref || 'openai');
+      setPreferredAI(pref || 'gemini');
+      setTextModel(tMod || 'gemini-2.0-flash');
+      setImageModel(iMod || 'gemini-2.0-flash-image');
     } catch (err) {
       console.error('Failed to load settings:', err);
     }
@@ -37,6 +43,8 @@ const Settings: React.FC = () => {
       await SetSetting('gemini_api_key', geminiKey);
       await SetSetting('claude_api_key', claudeKey);
       await SetSetting('preferred_ai', preferredAI);
+      await SetSetting('text_model', textModel);
+      await SetSetting('image_model', imageModel);
       alert('설정이 저장되었습니다.');
     } catch (err) {
       alert('저장 실패: ' + err);
@@ -50,21 +58,44 @@ const Settings: React.FC = () => {
       <div className="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden">
         <div className="p-6 border-b border-slate-700 bg-slate-800/50 flex items-center space-x-3">
           <Key className="text-blue-400" size={24} />
-          <h3 className="text-xl font-bold">AI 엔진 및 API 설정</h3>
+          <h3 className="text-xl font-bold">AI 엔진 및 모델 설정</h3>
         </div>
         
         <div className="p-8 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-slate-400 mb-2">기본 AI 엔진</label>
+              <select 
+                value={preferredAI}
+                onChange={(e) => setPreferredAI(e.target.value)}
+                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none text-white"
+              >
+                <option value="openai">OpenAI</option>
+                <option value="gemini">Google Gemini</option>
+                <option value="claude">Anthropic Claude</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-400 mb-2">텍스트 모델명</label>
+              <input 
+                type="text"
+                value={textModel}
+                onChange={(e) => setTextModel(e.target.value)}
+                placeholder="예: gemini-2.0-flash"
+                className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none text-white font-mono"
+              />
+            </div>
+          </div>
+
           <div>
-            <label className="block text-sm font-medium text-slate-400 mb-2">기본 AI 엔진 선택</label>
-            <select 
-              value={preferredAI}
-              onChange={(e) => setPreferredAI(e.target.value)}
-              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none text-white"
-            >
-              <option value="openai">OpenAI (GPT-4o)</option>
-              <option value="gemini">Google Gemini (Pro)</option>
-              <option value="claude">Anthropic Claude (3.5 Sonnet)</option>
-            </select>
+            <label className="block text-sm font-medium text-slate-400 mb-2">이미지 생성 모델명</label>
+            <input 
+              type="text"
+              value={imageModel}
+              onChange={(e) => setImageModel(e.target.value)}
+              placeholder="예: dall-e-3 또는 gemini-2.0-flash-image"
+              className="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none text-white font-mono"
+            />
           </div>
 
           <div className="pt-4 border-t border-slate-700 space-y-6">
