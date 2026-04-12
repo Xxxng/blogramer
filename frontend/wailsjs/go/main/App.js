@@ -26,12 +26,20 @@ export function GeneratePost(arg1, arg2) {
   return window['go']['main']['App']['GeneratePost'](arg1, arg2);
 }
 
+export function GeneratePostWithKeyword(arg1, arg2) {
+  return window['go']['main']['App']['GeneratePostWithKeyword'](arg1, arg2);
+}
+
 export function GetAccounts() {
   return window['go']['main']['App']['GetAccounts']();
 }
 
 export function GetCategories() {
   return window['go']['main']['App']['GetCategories']();
+}
+
+export function GetDashboardStats() {
+  return window['go']['main']['App']['GetDashboardStats']();
 }
 
 export function GetPost(arg1) {

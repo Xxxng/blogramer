@@ -49,3 +49,9 @@
   - **Bug Fix**: `wails.json` 설정 변경으로 발생한 `Blogramer-res.syso` 누락 문제를 `wails build`를 통한 리소스 재생성으로 해결.
   - **UI Testing**: Playwright를 이용한 네비게이션 테스트(`navigation.spec.ts`)를 실행하여 모든 항목(대시보드, 계정, 포스팅, 설정) 통과 확인.
   - **Mandate Check**: "No Pass, No Push" 원칙에 따라 테스트 성공 후 푸시 프로세스 진행.
+
+- **2026-04-12 (9)**: 대시보드 동적 데이터 연결 및 AI 포스팅 생성 버그 수정.
+  - **Dashboard**: `GetDashboardStats` API를 구현하여 계정 수, 발행 포스트 수, 초안 수 및 최근 활동 내역을 실시간으로 표시하도록 개선.
+  - **AI Generation**: `GeneratePostWithKeyword` API를 신설하여 프론트엔드에서 입력한 키워드가 실제 AI 프롬프트에 반영되지 않고 하드코딩된 ID(1)를 참조하던 버그 해결.
+  - **Type Safety**: 신규 DTO(`DashboardStats`) 정의 및 Wails 바인딩 갱신을 통해 프론트엔드-백엔드 간 타입 일관성 유지.
+  - **Validation**: `npm run build`를 통해 프론트엔드 타입 체크 완료 및 백엔드 컴파일 확인.

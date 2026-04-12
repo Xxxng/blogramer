@@ -139,3 +139,11 @@ func ToSubjectResponses(subjects []Subject) []SubjectResponse {
 	}
 	return responses
 }
+
+// DashboardStats represents the statistics data sent to the frontend
+type DashboardStats struct {
+	AccountCount   int64          `json:"account_count"`
+	PublishedCount int64          `json:"published_count"`
+	DraftCount     int64          `json:"draft_count"`
+	RecentPosts    []PostResponse `json:"recent_posts"`
+}

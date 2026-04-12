@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, Send, Eye, Trash2, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { GetAccounts, GeneratePost, PublishPost, GetPosts, DeletePost } from '../../wailsjs/go/main/App';
+import { GetAccounts, GeneratePostWithKeyword, PublishPost, GetPosts, DeletePost } from '../../wailsjs/go/main/App';
 import { models } from '../../wailsjs/go/models';
 
 const Posts: React.FC = () => {
@@ -44,7 +44,7 @@ const Posts: React.FC = () => {
 
     setIsGenerating(true);
     try {
-      await GeneratePost(1, selectedAccount); 
+      await GeneratePostWithKeyword(keyword, selectedAccount); 
       alert('포스팅 생성 완료!');
       setKeyword('');
       fetchPosts();

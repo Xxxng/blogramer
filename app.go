@@ -46,6 +46,10 @@ func (a *App) GeneratePost(subjectID uint, accountID uint) (uint, error) {
 	return api.GeneratePost(subjectID, accountID)
 }
 
+func (a *App) GeneratePostWithKeyword(keyword string, accountID uint) (uint, error) {
+	return api.GeneratePostWithKeyword(keyword, accountID)
+}
+
 func (a *App) GetPosts() ([]models.PostResponse, error) {
 	return api.GetPosts()
 }
@@ -64,6 +68,11 @@ func (a *App) DeletePost(id uint) error {
 
 func (a *App) PublishPost(postID uint) error {
 	return api.PublishPost(postID)
+}
+
+// Dashboard API
+func (a *App) GetDashboardStats() (models.DashboardStats, error) {
+	return api.GetDashboardStats()
 }
 
 // Subject & Category APIs

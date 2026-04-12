@@ -100,6 +100,27 @@ Rules:
 	return post.ID, nil
 }
 
+func GeneratePostWithKeyword(keyword string, accountID uint) (uint, error) {
+	// 1. Ensure "Uncategorized" category exists
+	var category models.Category
+	if err := database.DB.Where("name = ?", "Uncategorized").First(&category).Error; err != nil {
+		category = models.Category{Name: "Uncategorized"}
+		database.DB.Create(&category)
+	}
+
+	// 2. Create a new Subject for this keyword
+	subject := models.Subject{
+		CategoryID: category.ID,
+		Keyword:    keyword,
+	}
+	if err := database.DB.Create(&subject).Error; err != nil {
+		return 0, err
+	}
+
+	// 3. Call existing GeneratePost logic
+	return GeneratePost(subject.ID, accountID)
+}
+
 func GetPosts() ([]models.PostResponse, error) {
 	var posts []models.Post
 	if err := database.DB.Order("id desc").Find(&posts).Error; err != nil {

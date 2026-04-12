@@ -14,9 +14,13 @@ export function DeletePost(arg1:number):Promise<void>;
 
 export function GeneratePost(arg1:number,arg2:number):Promise<number>;
 
+export function GeneratePostWithKeyword(arg1:string,arg2:number):Promise<number>;
+
 export function GetAccounts():Promise<Array<models.AccountResponse>>;
 
 export function GetCategories():Promise<Array<models.CategoryResponse>>;
+
+export function GetDashboardStats():Promise<models.DashboardStats>;
 
 export function GetPost(arg1:number):Promise<models.PostResponse>;
 
