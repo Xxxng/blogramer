@@ -9,10 +9,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/google/generative-ai-go/genai"
+	"google.golang.org/genai"
 	"github.com/liushuangls/go-anthropic/v2"
 	"github.com/sashabaranov/go-openai"
-	"google.golang.org/api/option"
 )
 
 func GeneratePost(subjectID uint, accountID uint) (uint, error) {
@@ -100,23 +99,25 @@ func generateContent(provider string, modelName string, subject models.Subject, 
 			return "", errors.New("Gemini API Key not set")
 		}
 		if modelName == "" {
-			modelName = "gemini-1.5-flash"
+			modelName = "gemini-2.5-flash"
 		}
 		ctx := context.Background()
-		client, err := genai.NewClient(ctx, option.WithAPIKey(apiKey.Value))
+		client, err := genai.NewClient(ctx, &genai.ClientConfig{
+			APIKey:  apiKey.Value,
+			Backend: genai.BackendGeminiAPI,
+		})
 		if err != nil {
 			return "", err
 		}
-		defer client.Close()
-		model := client.GenerativeModel(modelName)
-		resp, err := model.GenerateContent(ctx, genai.Text(prompt))
+
+		result, err := client.Models.GenerateContent(ctx, modelName, genai.Text(prompt), nil)
 		if err != nil {
 			return "", err
 		}
-		if len(resp.Candidates) == 0 || len(resp.Candidates[0].Content.Parts) == 0 {
+		if len(result.Candidates) == 0 || len(result.Candidates[0].Content.Parts) == 0 {
 			return "", errors.New("gemini returned no content")
 		}
-		return fmt.Sprintf("%v", resp.Candidates[0].Content.Parts[0]), nil
+		return result.Candidates[0].Content.Parts[0].Text, nil
 
 	case "claude":
 		var apiKey models.Setting

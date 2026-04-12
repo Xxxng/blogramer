@@ -80,3 +80,9 @@
   - **Gemini 2.0 Support**: 최신 Gemini 2.0 Flash 모델을 기본값으로 설정하고, 멀티모달 환경에 대응할 수 있도록 백엔드 로직 업데이트.
   - **Flexibility**: 특정 AI 제공자에 종속되지 않고, 사용자가 원하는 모델 조합(예: Claude 텍스트 + DALL-E 3 이미지)으로 포스팅 생성이 가능하도록 아키텍처 개선.
   - **Validation**: `wails build`를 통한 컴파일 안정성 확인 및 최종 프로덕션 빌드 완료.
+
+- **2026-04-12 (14)**: Gemini SDK 업데이트 (google.golang.org/genai) 및 최신 모델(3.1) 대응.
+  - **SDK Migration**: 레거시 `generative-ai-go` 패키지를 제거하고, 구글의 최신 통합 SDK인 `google.golang.org/genai`로 전면 교체.
+  - **API Fix**: `API_KEY_INVALID` 및 404 에러 해결을 위해 최신 `BackendGeminiAPI` 설정 및 클라이언트 초기화 로직 적용.
+  - **Model Update**: 사용자 요청에 따라 기본 모델을 `gemini-2.5-flash`로 업데이트하고, 최신 Gemini 3.1 모델 라인업에 대응 가능한 구조로 개선.
+  - **Code Quality**: `anthropic.Model` 타입 캐스팅 수정 및 Gemini 응답 파싱 로직을 신규 SDK 명세에 맞춰 최적화.

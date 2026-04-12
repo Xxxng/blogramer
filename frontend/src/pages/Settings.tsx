@@ -8,8 +8,8 @@ const Settings: React.FC = () => {
   const [geminiKey, setGeminiKey] = useState('');
   const [claudeKey, setClaudeKey] = useState('');
   const [preferredAI, setPreferredAI] = useState('gemini');
-  const [textModel, setTextModel] = useState('gemini-2.0-flash');
-  const [imageModel, setImageModel] = useState('gemini-2.0-flash-image');
+  const [textModel, setTextModel] = useState('gemini-2.5-flash');
+  const [imageModel, setImageModel] = useState('gemini-2.5-flash-image');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -29,8 +29,8 @@ const Settings: React.FC = () => {
       setGeminiKey(gKey || '');
       setClaudeKey(cKey || '');
       setPreferredAI(pref || 'gemini');
-      setTextModel(tMod || 'gemini-2.0-flash');
-      setImageModel(iMod || 'gemini-2.0-flash-image');
+      setTextModel(tMod || 'gemini-2.5-flash');
+      setImageModel(iMod || 'gemini-2.5-flash-image');
     } catch (err) {
       console.error('Failed to load settings:', err);
     }
