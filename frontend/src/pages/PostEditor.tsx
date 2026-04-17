@@ -112,8 +112,8 @@ const PostEditor: React.FC = () => {
   if (!post) return <div className="p-8 text-center text-slate-500">로딩 중...</div>;
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto">
-      <div className="flex justify-between items-center">
+    <div className="space-y-6 w-full h-full flex flex-col px-4">
+      <div className="flex justify-between items-center shrink-0">
         <button 
           onClick={() => navigate('/posts')}
           className="flex items-center text-slate-400 hover:text-white transition-colors"
@@ -166,8 +166,8 @@ const PostEditor: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden flex flex-col min-h-[70vh]">
-        <div className="p-6 border-b border-slate-700">
+      <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden flex flex-col flex-1 min-h-0">
+        <div className="p-6 border-b border-slate-700 shrink-0">
           <input 
             type="text"
             value={title}
