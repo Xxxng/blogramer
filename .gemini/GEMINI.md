@@ -8,14 +8,16 @@
 Blogramer는 사용자가 로컬 환경에서 다수의 블로그(Tistory, WordPress, Naver 등)를 통합 관리하고, AI(OpenAI/Claude)를 활용해 양질의 콘텐츠를 대량으로 생성 및 발행할 수 있도록 돕는 데스크톱 애플리케이션입니다.
 
 ## 2. 핵심 기술 스택 (Tech Stack)
-- **Backend**: Go 1.23+ (Wails v2, GORM, SQLite)
+- **Backend**: Go 1.25+ (Wails v2, GORM, SQLite)
 - **Frontend**: React 18 (TypeScript, Tailwind CSS v4, Lucide React)
-- **Intelligence**: OpenAI API / Claude API 연동
+- **Intelligence**: Google Gemini (2.5 Stable / 3.1 Preview), Claude 3.5, OpenAI GPT-4o
+- **Image Generation**: Gemini Native Image (Nano Banana 2 / Pro), DALL-E 3
 - **Database**: 로컬 SQLite (CGO-free driver 사용)
+
 
 ## 3. 에이전트 행동 지침 (Agent Mandates)
 - **개발 사이클 준수 (MUST)**: 모든 기능 개발 후에는 반드시 다음 순서를 따르며, **테스트가 통과하지 않으면 절대 푸시하지 않습니다.**
-  1. **UI/로직 테스트**: `npx playwright test`를 실행하여 검증. 실패 시 디버깅 후 재테스트.
+  1. **UI/로직 테스트**: `wails dev`를 먼저 진행후, `npx playwright test`를 실행하여 검증. 실패 시 디버깅 후 재테스트.
   2. **Pass 확인**: 모든 테스트가 'Green' 상태임을 확인.
   3. **메모리 정리**: `shared/MEMORY.md`에 작업 내용 및 ADR 기록.
   4. **깃 푸쉬**: 테스트 통과가 확인된 변경 사항만 `origin master`에 푸시.

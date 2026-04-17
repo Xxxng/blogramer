@@ -86,3 +86,11 @@
   - **API Fix**: `API_KEY_INVALID` 및 404 에러 해결을 위해 최신 `BackendGeminiAPI` 설정 및 클라이언트 초기화 로직 적용.
   - **Model Update**: 사용자 요청에 따라 기본 모델을 `gemini-2.5-flash`로 업데이트하고, 최신 Gemini 3.1 모델 라인업에 대응 가능한 구조로 개선.
   - **Code Quality**: `anthropic.Model` 타입 캐스팅 수정 및 Gemini 응답 파싱 로직을 신규 SDK 명세에 맞춰 최적화.
+
+- **2026-04-17 (1)**: Gemini native 이미지 생성(Nano Banana) 연동 및 설정 UI 전면 개편.
+  - **Image Generation**: Google AI Studio의 Imagen 3/4(Gemini native image models, 일명 Nano Banana) 모델을 백엔드에 직접 연동. 생성된 바이너리 데이터를 Base64로 인코딩하여 본문에 즉시 삽입하도록 구현.
+  - **Settings UI**: 사용자가 모델명을 직접 입력하던 방식에서 드롭다운 선택 방식으로 개선. 텍스트 AI와 이미지 AI 엔진/모델 설정을 완전히 분리하여 독립적인 엔진 조합(예: Claude 텍스트 + Gemini 이미지) 지원.
+  - **Model Optimization**: 지원 중단된 Gemini 2.0 모델을 제거하고, 최신 Stable(2.5 시리즈) 및 Preview(3.1 시리즈) 모델로 목록 최신화.
+  - **Editor UX**: 포스트 에디터 컨테이너가 창 크기에 맞춰 유동적으로 최대화되도록 레이아웃 수정(flex-1 적용). 미리보기 화면에서 마크다운 이미지 태그(![alt](url))를 실제 그림으로 렌더링하는 기능 추가.
+  - **Error Handling**: 이미지 생성 실패 시 본문 상단에 구체적인 에러 메시지를 표시하여 디버깅 편의성 강화.
+
