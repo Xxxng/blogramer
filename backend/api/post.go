@@ -5,6 +5,7 @@ import (
 	"app/backend/models"
 	"app/backend/platforms"
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"time"
@@ -40,20 +41,35 @@ func GeneratePost(subjectID uint, accountID uint) (uint, error) {
 	database.DB.Where("key = ?", "text_model").First(&textModelSetting)
 	textModel := textModelSetting.Value
 
+	var imageProviderSetting models.Setting
+	database.DB.Where("key = ?", "image_provider").First(&imageProviderSetting)
+	imageProvider := imageProviderSetting.Value
+	if imageProvider == "" {
+		imageProvider = provider // fallback to text provider if not set
+	}
+
 	var imageModelSetting models.Setting
 	database.DB.Where("key = ?", "image_model").First(&imageModelSetting)
 	imageModel := imageModelSetting.Value
 
 	// 2. Generate Content
+	fmt.Println("Generating content with provider:", provider, "and model:", textModel)
 	content, err := generateContent(provider, textModel, subject, platform)
 	if err != nil {
 		return 0, err
 	}
 
 	// 3. Generate Image
-	imageURL, err := generateImage(provider, imageModel, subject)
-	if err == nil && imageURL != "" {
+	fmt.Println("Generating image with provider:", imageProvider, "and model:", imageModel)
+	imageURL, err := generateImage(imageProvider, imageModel, subject)
+	if err != nil {
+		fmt.Println("Image generation failed:", err)
+		content = fmt.Sprintf("> [이미지 생성 실패: %s]\n\n%s", err.Error(), content)
+	} else if imageURL != "" {
+		fmt.Println("Image generated successfully. URL length:", len(imageURL))
 		content = fmt.Sprintf("![Header Image](%s)\n\n%s", imageURL, content)
+	} else {
+		fmt.Println("Image generation returned empty URL")
 	}
 
 	title := fmt.Sprintf("%s - %s", subject.Category.Name, subject.Keyword)
@@ -166,15 +182,59 @@ func generateContent(provider string, modelName string, subject models.Subject, 
 func generateImage(provider string, modelName string, subject models.Subject) (string, error) {
 	imagePrompt := fmt.Sprintf("A professional and high-quality blog header image about '%s'. Style: Modern, clean, and relevant to %s.", subject.Keyword, subject.Category.Name)
 
-	// Currently, we mostly rely on OpenAI for high-quality DALL-E 3 images.
-	// We check if the user specifically requested a model that looks like an OpenAI model or if they use OpenAI provider.
+	var geminiKey models.Setting
+	database.DB.Where("key = ?", "gemini_api_key").First(&geminiKey)
 	
 	var openAIKey models.Setting
 	database.DB.Where("key = ?", "openai_api_key").First(&openAIKey)
 
-	// If image provider is gemini and they have a model name, we could try Imagen via REST (not fully in SDK yet)
-	// For MVP simplicity, if provider is OpenAI or if modelName is dall-e, we use OpenAI.
-	if (provider == "openai" || modelName == "dall-e-3" || modelName == "dall-e-2") && openAIKey.Value != "" {
+	fmt.Printf("[DEBUG] generateImage - provider: %s, model: %s, hasGeminiKey: %v, hasOpenAIKey: %v\n", 
+		provider, modelName, geminiKey.Value != "", openAIKey.Value != "")
+
+	// 1. Try Gemini (Imagen/Nano Banana)
+	if provider == "gemini" {
+		if geminiKey.Value == "" {
+			return "", errors.New("Gemini API Key가 설정되지 않았습니다")
+		}
+		
+		if modelName == "" {
+			modelName = "gemini-2.5-flash-image"
+		}
+		
+		ctx := context.Background()
+		client, err := genai.NewClient(ctx, &genai.ClientConfig{
+			APIKey:  geminiKey.Value,
+			Backend: genai.BackendGeminiAPI,
+		})
+		if err != nil {
+			return "", fmt.Errorf("Gemini 클라이언트 생성 실패: %v", err)
+		}
+		
+		config := &genai.GenerateImagesConfig{
+			NumberOfImages: 1,
+			AspectRatio:    "16:9",
+			OutputMIMEType: "image/jpeg",
+		}
+		
+		fmt.Printf("[DEBUG] Calling Gemini GenerateImages with model: %s\n", modelName)
+		resp, err := client.Models.GenerateImages(ctx, modelName, imagePrompt, config)
+		if err != nil {
+			return "", fmt.Errorf("Gemini 이미지 생성 API 호출 실패: %v", err)
+		}
+		
+		if len(resp.GeneratedImages) > 0 {
+			imgBytes := resp.GeneratedImages[0].Image.ImageBytes
+			base64Str := base64.StdEncoding.EncodeToString(imgBytes)
+			return fmt.Sprintf("data:image/jpeg;base64,%s", base64Str), nil
+		}
+		return "", errors.New("Gemini가 이미지를 반환하지 않았습니다")
+	}
+
+	// 2. OpenAI DALL-E
+	if provider == "openai" {
+		if openAIKey.Value == "" {
+			return "", errors.New("OpenAI API Key가 설정되지 않았습니다")
+		}
 		if modelName == "" {
 			modelName = openai.CreateImageModelDallE3
 		}
@@ -190,30 +250,12 @@ func generateImage(provider string, modelName string, subject models.Subject) (s
 			},
 		)
 		if err != nil {
-			return "", err
+			return "", fmt.Errorf("OpenAI 이미지 생성 실패: %v", err)
 		}
 		return imgResp.Data[0].URL, nil
 	}
 
-	// Fallback to OpenAI if key exists, otherwise return error
-	if openAIKey.Value != "" {
-		client := openai.NewClient(openAIKey.Value)
-		imgResp, err := client.CreateImage(
-			context.Background(),
-			openai.ImageRequest{
-				Prompt:         imagePrompt,
-				Model:          openai.CreateImageModelDallE3,
-				N:              1,
-				Size:           openai.CreateImageSize1024x1024,
-				ResponseFormat: openai.CreateImageResponseFormatURL,
-			},
-		)
-		if err == nil {
-			return imgResp.Data[0].URL, nil
-		}
-	}
-
-	return "", errors.New("image generation not supported for this configuration or API key missing")
+	return "", errors.New("지원되지 않는 엔진 설정이거나 API 키가 누락되었습니다")
 }
 
 func GeneratePostWithKeyword(keyword string, accountID uint) (uint, error) {

@@ -195,7 +195,22 @@ const PostEditor: React.FC = () => {
           ) : (
             <div className="w-full h-full p-8 prose prose-invert max-w-none overflow-auto">
               <div className="whitespace-pre-wrap font-sans text-slate-300">
-                {content}
+                {content.split(/(!\[.*?\]\(.*?\))/g).map((part, index) => {
+                  const match = part.match(/!\[(.*?)\]\((.*?)\)/);
+                  if (match) {
+                    return (
+                      <div key={index} className="my-6">
+                        <img 
+                          src={match[2]} 
+                          alt={match[1]} 
+                          className="rounded-xl border border-slate-700 max-w-full h-auto shadow-2xl"
+                        />
+                        <p className="text-center text-xs text-slate-500 mt-2">{match[1]}</p>
+                      </div>
+                    );
+                  }
+                  return <span key={index}>{part}</span>;
+                })}
               </div>
             </div>
           )}
